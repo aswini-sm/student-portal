@@ -15,7 +15,13 @@ const Dashboard = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${API}/api/results`); // ✅ FIXED
+      const token = localStorage.getItem("token");
+
+const response = await axios.get(`${API}/api/results`, {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+}); // ✅ FIXED
       setData(response.data);
     } catch (err) {
       setError(err.response?.data || "Failed to fetch results");

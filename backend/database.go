@@ -6,22 +6,16 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 )
 
 var DB *sql.DB
 
 func InitDB() {
-	dbUser := os.Getenv("DB_USER")
-	dbPass := os.Getenv("DB_PASSWORD")
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbName := os.Getenv("DB_NAME")
-
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbHost, dbPort, dbName)
+	connStr := os.Getenv("DATABASE_URL")
 
 	var err error
-	DB, err = sql.Open("mysql", dsn)
+	DB, err = sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatalf("Error opening database: %v", err)
 	}
@@ -31,5 +25,5 @@ func InitDB() {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
 
-	log.Println("Successfully connected to the database!")
+	fmt.Println("✅ Successfully connected to PostgreSQL!")
 }

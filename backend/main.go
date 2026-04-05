@@ -10,42 +10,36 @@ import (
 )
 
 func main() {
-	// Load .env file if it exists (it might fail in some deployment environments and that's okay, we'll try to load it first)
+	// Load .env (works locally, ignored in Render)
 	_ = godotenv.Load()
 
-	// Initialize the Database
+	// Initialize DB
 	InitDB()
 
-	// Initialize Auth (JWT Key)
+	// Initialize Auth
 	InitAuth()
 
-	// Set up REST Router
 	mux := http.NewServeMux()
 
-	// Open Endpoint
+	// Routes
 	mux.HandleFunc("/api/login", LoginHandler)
-
-	// Protected Endpoint using AuthMiddleware
 	mux.HandleFunc("/api/results", AuthMiddleware(ResultsHandler))
 
-	// Get port from environment or fallback to 8080
+	// Port
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 
-	// Setup CORS
+	// CORS (allow all for now)
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:5173", "http://localhost:3000", "*"}, // * is for simplicity in development
+		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Authorization", "Content-Type"},
 	})
 
-	// Wrap Router with CORS middleware
 	handler := c.Handler(mux)
 
 	log.Printf("Server running on port %s...\n", port)
-	if err := http.ListenAndServe(":"+port, handler); err != nil {
-		log.Fatalf("Server failed: %v", err)
-	}
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }

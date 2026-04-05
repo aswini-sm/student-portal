@@ -4,6 +4,8 @@ import Navbar from '../components/Navbar';
 import ResultCard from '../components/ResultCard';
 import { Loader2, Award, AlertCircle, RefreshCw } from 'lucide-react';
 
+const API = import.meta.env.VITE_API_URL; // ✅ ADD THIS
+
 const Dashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,7 +15,7 @@ const Dashboard = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get('http://localhost:8080/api/results');
+      const response = await axios.get(`${API}/api/results`); // ✅ FIXED
       setData(response.data);
     } catch (err) {
       setError(err.response?.data || "Failed to fetch results");
@@ -25,6 +27,8 @@ const Dashboard = () => {
   useEffect(() => {
     fetchResults();
   }, []);
+
+  // rest of your code SAME...
 
   if (loading) {
     return (

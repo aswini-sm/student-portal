@@ -33,9 +33,14 @@ func main() {
 
 	// CORS (allow all for now)
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Authorization", "Content-Type"},
+		AllowedOrigins: []string{
+			"http://localhost:5173",
+			"http://localhost:3000",
+			"https://student-portal-one-khaki.vercel.app", // ✅ ADD THIS
+		},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Authorization", "Content-Type"},
+		AllowCredentials: true, // ✅ ADD THIS
 	})
 
 	handler := c.Handler(mux)

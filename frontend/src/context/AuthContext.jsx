@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const AuthContext = createContext();
 
-const API = import.meta.env.VITE_API_URL; // ✅ keep outside
+const API = "https://student-portal-ndol.onrender.com/"; // ✅ keep outside
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);

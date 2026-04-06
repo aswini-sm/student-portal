@@ -19,32 +19,34 @@ func main() {
 	// Initialize Auth
 	InitAuth()
 
+	// Initialize the mux router
 	mux := http.NewServeMux()
 
-	// Routes
-	mux.HandleFunc("/api/login", LoginHandler)
-	mux.HandleFunc("/api/results", AuthMiddleware(ResultsHandler))
+	// Register Routes
+	mux.HandleFunc("/api/login", LoginHandler)                     // Login Handler for POST /api/login
+	mux.HandleFunc("/api/results", AuthMiddleware(ResultsHandler)) // Results with AuthMiddleware
 
-	// Port
+	// Get Port from Environment or default to 8080
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 
-	// CORS (allow all for now)
+	// CORS configuration
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{
-			"http://localhost:5173",
-			"http://localhost:3000",
-			"https://student-portal-one-khaki.vercel.app", // ✅ ADD THIS
+			"http://localhost:5173",                       // Local frontend (dev)
+			"http://localhost:3000",                       // Another local frontend (if any)
+			"https://student-portal-one-khaki.vercel.app", // Your deployed frontend URL
 		},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
-		AllowCredentials: true, // ✅ ADD THIS
+		AllowCredentials: true, // Make sure credentials are allowed
 	})
 
 	handler := c.Handler(mux)
 
+	// Log the server status and start listening
 	log.Printf("Server running on port %s...\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, handler))
 }

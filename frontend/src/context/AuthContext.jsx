@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 
 export const AuthContext = createContext();
@@ -39,7 +40,8 @@ export const AuthProvider = ({ children }) => {
 
       return true;
     } catch (err) {
-      setError("Failed to login");
+      console.error("Login error:", err);
+      setError(err.response?.data?.message || "Failed to login");
       return false;
     } finally {
       setLoading(false);
@@ -52,9 +54,15 @@ export const AuthProvider = ({ children }) => {
     setUsername(null);
   };
 
+  const value = useMemo(() => ({ token, username, loading, error, login, logout }), [token, username, loading, error, login, logout]);
+
   return (
-    <AuthContext.Provider value={{ token, username, loading, error, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };

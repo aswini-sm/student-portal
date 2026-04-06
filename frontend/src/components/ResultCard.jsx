@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { BookOpen, Calculator, Globe, FlaskConical, ScrollText } from 'lucide-react';
 
 const icons = {
@@ -51,6 +52,11 @@ const ResultCard = ({ subject, marks }) => {
       </div>
     </div>
   );
+};
+
+ResultCard.propTypes = {
+  subject: PropTypes.string.isRequired,
+  marks: PropTypes.number.isRequired,
 };
 
 export default ResultCard;
